@@ -1,0 +1,19 @@
+name: reeds-viz
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - python < 3.13
+  - pip
+  - ipykernel
+  - jupyterlab
+  - matplotlib
+  - pandas
+  - scipy
+  - seaborn
+  - numpy
+  - tqdm
+  - pip:
+    - streamlit
+    - pygwalker
+    - us
