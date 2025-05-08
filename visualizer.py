@@ -10,7 +10,8 @@ results_version = ['test_results','results']
 available_years = ['fy25']
 aggregation_level = ['BA', 'State', 'National']
 
-metric_file = {"capacity":'cap.csv'}
+metric_file = {"capacity":'cap.csv',
+               "generation":'gen_ann.csv'}
 
 
 # Adjust the width of the Streamlit page
@@ -74,7 +75,7 @@ def get_pyg_renderer() -> "StreamlitRenderer":
     # If you want to use feature of saving chart config, set `spec_io_mode="rw"`
     return StreamlitRenderer(df, spec='./gw_config.json', spec_io_mode="rw")
 
+if __name__ == "__main__":
+    pyg_app = get_pyg_renderer()
 
-pyg_app = get_pyg_renderer()
-
-pyg_app.explorer()
+    pyg_app.explorer()
