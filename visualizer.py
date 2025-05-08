@@ -33,26 +33,29 @@ year_selectbox = st.sidebar.selectbox('Choose a version year',
                                         )
 path /= year_selectbox
 
-scale_selectbox = st.sidebar.selectbox("Choose one",
+scale_selectbox = st.sidebar.selectbox("Choose case",
                                        os.listdir(path))
 path /= scale_selectbox
 
-scenarios_list = st.sidebar.multiselect("Choose scenarios to compare",
-                       os.listdir(path))
+scenario_opts = os.listdir(path)
 
-metric_selectbox = st.sidebar.selectbox(
-    'Choose a metric',
-    available_metrics
-)
+scenarios_list = st.sidebar.multiselect("Choose scenarios to compare",
+                                        scenario_opts,
+                                        default = scenario_opts[0]
+                       )
+# metric_selectbox = st.sidebar.selectbox(
+#     'Choose a metric',
+#     available_metrics
+# )
 
 agg_level = st.sidebar.selectbox("Choose a spatial aggregation",
                                  aggregation_level)
 
-@st.cache_resource
-def get_data():
+# @st.cache_resource
+def get_data(metric):
     frames = []
     for scenario in scenarios_list:
-        df = pd.read_csv(path/scenario/metric_file[metric_selectbox])
+        df = pd.read_csv(path/scenario/metric_file[metric])
         df['scenario'] = scenario
         frames.append(df)
     full_df = pd.concat(frames)
@@ -65,13 +68,16 @@ def get_data():
             full_df.loc[full_df['i'].str.contains(tech, case=False), 'i'] = tech
     return full_df
 
-
-# data = get_data()
  
 # You should cache your pygwalker renderer, if you don't want your memory to explode
-@st.cache_resource
+# @st.cache_resource
 def get_pyg_renderer() -> "StreamlitRenderer":
-    df = get_data()
+    with st.sidebar:
+        metric_selectbox = st.selectbox(
+            'Choose a metric',
+            available_metrics
+        )
+    df = get_data(metric=metric_selectbox)
     # If you want to use feature of saving chart config, set `spec_io_mode="rw"`
     return StreamlitRenderer(df, spec='./gw_config.json', spec_io_mode="rw")
 
