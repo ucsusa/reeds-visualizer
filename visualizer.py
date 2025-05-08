@@ -51,6 +51,13 @@ scenarios_list = st.sidebar.multiselect("Choose scenarios to compare",
 agg_level = st.sidebar.selectbox("Choose a spatial aggregation",
                                  aggregation_level)
 
+
+@st.cache_data
+def get_ba_to_state():
+    c2z = pd.read_csv("data/county2zone.csv", index_col=0)
+    ba_to_state = dict(zip(*c2z[['ba', 'state']].values.T))
+    return ba_to_state
+
 # @st.cache_resource
 def get_data(metric):
     frames = []
@@ -66,6 +73,11 @@ def get_data(metric):
             full_df.loc[(full_df['i'].str.contains(tech, case=False) & full_df['i'].str.contains('CCS')),'i'] = f'{tech}_CCS'
         else:
             full_df.loc[full_df['i'].str.contains(tech, case=False), 'i'] = tech
+
+    if agg_level == 'State':
+        ba_to_state = get_ba_to_state()
+        full_df = full_df.replace(ba_to_state).groupby(['i','r','t', 'scenario']).sum().reset_index()
+    
     return full_df
 
  
