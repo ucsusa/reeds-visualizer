@@ -5,13 +5,15 @@ from pathlib import Path
 from glob import glob
 import os
 
-available_metrics = ['capacity','generation']
+available_metrics = ['capacity','generation','emissions', 'system costs']
 results_version = ['test_results','results']
 available_years = ['fy25']
 aggregation_level = ['BA', 'State', 'National']
 
 metric_file = {"capacity":'cap.csv',
-               "generation":'gen_ann.csv'}
+               "generation":'gen_ann.csv',
+               "emissions":'emit_irt.csv',
+               "system costs":"systemcost_techba.csv"}
 
 
 # Adjust the width of the Streamlit page
@@ -76,7 +78,9 @@ def get_data(metric):
 
     if agg_level == 'State':
         ba_to_state = get_ba_to_state()
-        full_df = full_df.replace(ba_to_state).groupby(['i','r','t', 'scenario']).sum().reset_index()
+        cols = list(full_df.columns)
+        cols.remove("Value")
+        full_df = full_df.replace(ba_to_state).groupby(cols).sum().reset_index()
     
     return full_df
 
