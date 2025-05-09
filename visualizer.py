@@ -77,7 +77,11 @@ def get_data(metric):
         cols = list(full_df.columns)
         cols.remove("Value")
         full_df = full_df.replace(ba_to_state).groupby(cols).sum().reset_index()
-    
+    elif agg_level == "National":
+        cols = list(full_df.columns)
+        cols.remove("Value")
+        cols.remove("r")
+        full_df = full_df.groupby(cols).sum().drop(columns=['r']).reset_index()
     return full_df
 
  
