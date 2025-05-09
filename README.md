@@ -55,6 +55,6 @@ git pull origin main
 
 > [!NOTE]
 > You cannot pull changes or execute any commands in the same session that is running the visualizer.
-> In other words, you must shut down the visualizer, pull the changes, and restart it for the changes > to take effect.
+> In other words, you must shut down the visualizer, pull the changes, and restart it for the changes to take effect.
 
 
