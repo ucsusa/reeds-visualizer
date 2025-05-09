@@ -45,10 +45,6 @@ scenarios_list = st.sidebar.multiselect("Choose scenarios to compare",
                                         scenario_opts,
                                         default = scenario_opts[0]
                        )
-# metric_selectbox = st.sidebar.selectbox(
-#     'Choose a metric',
-#     available_metrics
-# )
 
 agg_level = st.sidebar.selectbox("Choose a spatial aggregation",
                                  aggregation_level)

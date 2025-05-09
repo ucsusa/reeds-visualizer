@@ -41,4 +41,20 @@ conda activate reeds-viz
 streamlit run visualizer.py
 ```
 
+# Pulling recent changes
+
+When issues or tickets lead to code changes, those changes will not automatically be present on
+a local copy of the repository. 
+
+In order to pull down the changes, make sure you are the in `reeds-visualizer` working directory
+in your command prompt or terminal window. Then you can use the following command (assuming the desired changes are on the main branch):
+
+```bash
+git pull origin main
+```
+
+> [!NOTE]
+> You cannot pull changes or execute any commands in the same session that is running the visualizer.
+> In other words, you must shut down the visualizer, pull the changes, and restart it for the changes > to take effect.
+
 
