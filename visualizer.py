@@ -5,7 +5,7 @@ from pathlib import Path
 from glob import glob
 import os
 
-available_metrics = ['capacity','generation','emissions', 'system costs']
+available_metrics = ['capacity','generation','emissions', 'system costs', 'net imports']
 results_version = ['test_results','results']
 available_years = ['fy25']
 aggregation_level = ['BA', 'State', 'National']
@@ -13,7 +13,8 @@ aggregation_level = ['BA', 'State', 'National']
 metric_file = {"capacity":'cap.csv',
                "generation":'gen_ann.csv',
                "emissions":'emit_irt.csv',
-               "system costs":"systemcost_techba.csv"}
+               "system costs":"systemcost_techba.csv",
+               "net imports":"net_import_ann_rep.csv"}
 
 
 # Adjust the width of the Streamlit page
@@ -65,12 +66,14 @@ def get_data(metric):
         frames.append(df)
     full_df = pd.concat(frames)
     agg_techs = ['wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
-    for tech in agg_techs:
-        if tech == ['coal', 'gas']:
-            full_df.loc[(full_df['i'].str.contains(tech, case=False) & ~full_df['i'].str.contains('CCS')),'i'] = 'coal'
-            full_df.loc[(full_df['i'].str.contains(tech, case=False) & full_df['i'].str.contains('CCS')),'i'] = f'{tech}_CCS'
-        else:
-            full_df.loc[full_df['i'].str.contains(tech, case=False), 'i'] = tech
+    
+    if "i" in full_df.columns:
+        for tech in agg_techs:
+            if tech == ['coal', 'gas']:
+                full_df.loc[(full_df['i'].str.contains(tech, case=False) & ~full_df['i'].str.contains('CCS')),'i'] = 'coal'
+                full_df.loc[(full_df['i'].str.contains(tech, case=False) & full_df['i'].str.contains('CCS')),'i'] = f'{tech}_CCS'
+            else:
+                full_df.loc[full_df['i'].str.contains(tech, case=False), 'i'] = tech
 
     if agg_level == 'State':
         ba_to_state = get_ba_to_state()
