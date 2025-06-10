@@ -36,9 +36,9 @@ year_selectbox = st.sidebar.selectbox('Choose a version year',
                                         )
 path /= year_selectbox
 
-scale_selectbox = st.sidebar.selectbox("Choose case",
-                                       os.listdir(path))
-path /= scale_selectbox
+# scale_selectbox = st.sidebar.selectbox("Choose case",
+#                                        os.listdir(path))
+# path /= scale_selectbox
 
 scenario_opts = os.listdir(path)
 
@@ -66,7 +66,7 @@ def get_data(metric):
         frames.append(df)
     full_df = pd.concat(frames)
     agg_techs = ['wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
-    
+
     if "i" in full_df.columns:
         for tech in agg_techs:
             if tech == ['coal', 'gas']:
