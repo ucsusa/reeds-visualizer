@@ -69,9 +69,10 @@ def get_data(metric):
 
     if "i" in full_df.columns:
         for tech in agg_techs:
-            if tech == ['coal', 'gas']:
-                full_df.loc[(full_df['i'].str.contains(tech, case=False) & ~full_df['i'].str.contains('CCS')),'i'] = 'coal'
-                full_df.loc[(full_df['i'].str.contains(tech, case=False) & full_df['i'].str.contains('CCS')),'i'] = f'{tech}_CCS'
+            if tech in ['coal', 'gas']:
+                # pass
+                full_df.loc[(full_df['i'].str.contains(tech, case=False) & ~full_df['i'].str.contains('CCS', case=False)),'i'] = tech
+                full_df.loc[(full_df['i'].str.contains(tech, case=False) & full_df['i'].str.contains('CCS', case=False)),'i'] = f'{tech}_CCS'
             else:
                 full_df.loc[full_df['i'].str.contains(tech, case=False), 'i'] = tech
 
