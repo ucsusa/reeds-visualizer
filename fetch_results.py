@@ -24,11 +24,13 @@ if __name__ == "__main__":
 
     for dir in os.listdir(search_path):
         print(f"[{dir}]")
-        tpath = target_path/dir
-        tpath.mkdir(exist_ok=True, parents=True)
         for file in metric_file.values():
+            # print(file)
             original_path = search_path/dir/"outputs"/file
             # print(original_path)
             if original_path.exists():
-                # print(f"Copying {file} to {tpath}")
+                new_dir = dir.strip('_')
+                tpath = target_path/new_dir
+                tpath.mkdir(exist_ok=True, parents=True)
+                print(f"Copying {file} to {tpath}")
                 shutil.copy(original_path, tpath/file)

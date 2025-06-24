@@ -5,7 +5,6 @@ from pathlib import Path
 from glob import glob
 import os
 
-available_metrics = ['capacity','generation','emissions', 'system costs', 'net imports']
 results_version = ['test_results','results']
 available_years = ['fy25']
 aggregation_level = ['BA', 'State', 'National']
@@ -14,7 +13,10 @@ metric_file = {"capacity":'cap.csv',
                "generation":'gen_ann.csv',
                "emissions":'emit_irt.csv',
                "system costs":"systemcost_techba.csv",
+               "bulk costs":"systemcost_ba_bulk.csv",
                "net imports":"net_import_ann_rep.csv"}
+
+available_metrics = list(metric_file.keys())
 
 
 # Adjust the width of the Streamlit page
