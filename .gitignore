@@ -175,3 +175,9 @@ cython_debug/
 .pypirc
 
 move_test
+
+CP_LowTrans_**_CES**
+CP_MidTrans_HighDC_NoIRA
+CP_MidTrans_LowDC_NoIRA
+LA_RPS_LowTrans**
+ELC_LowTrans**
