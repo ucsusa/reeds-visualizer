@@ -9,13 +9,10 @@ results_version = ['test_results','results']
 available_years = ['fy25']
 aggregation_level = ['BA', 'State', 'National']
 
-metric_file = {"capacity":'cap.csv',
-               "generation":'gen_ann.csv',
-               "emissions":'emit_irt.csv',
-               "system costs":"systemcost_techba.csv",
-               "bulk costs":"systemcost_ba_bulk.csv",
-               "net imports":"net_import_ann_rep.csv"}
+with open("config.yml", "r") as f:
+    config = yaml.safe_load(f)
 
+metric_file = config['metric_files']
 available_metrics = list(metric_file.keys())
 
 
