@@ -50,6 +50,10 @@ scenarios_list = st.sidebar.multiselect("Choose scenarios to compare",
 agg_level = st.sidebar.selectbox("Choose a spatial aggregation",
                                  aggregation_level)
 
+aggregate_techs = st.sidebar.selectbox("Technology Aggregation",
+                                         [True, False],
+                                        # default=True,
+                                         )
 
 @st.cache_data
 def get_ba_to_state():
@@ -67,7 +71,7 @@ def get_data(metric):
     full_df = pd.concat(frames)
     agg_techs = ['wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
 
-    if "i" in full_df.columns:
+    if ("i" in full_df.columns) & (aggregate_techs):
         for tech in agg_techs:
             if tech in ['coal', 'gas']:
                 # pass
