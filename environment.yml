@@ -13,6 +13,7 @@ dependencies:
   - seaborn
   - numpy
   - tqdm
+  - openpyxl
   - pip:
     - streamlit
     - pygwalker

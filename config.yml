@@ -6,3 +6,4 @@ metric_files:
   bulk costs: "systemcost_ba_bulk.csv"
   net imports: "net_import_ann_rep.csv"
   transmission capacity: "tran_mi_out.csv"
+  health damages: "health_damages_caused_r.csv"
