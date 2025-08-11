@@ -14,7 +14,7 @@ metric_file = config['metric_files']
 
 if __name__ == "__main__":
 
-    search_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/runs/")
+    search_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/final_runs/")
 
     # target_path = Path("./test_results/move_test")
     target_path = Path("./results/fy25/")
