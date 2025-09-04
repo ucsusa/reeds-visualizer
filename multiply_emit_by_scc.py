@@ -6,27 +6,6 @@ from glob import glob
 if __name__ == "__main__":
     test_year = 2020
 
-    # runs_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/runs")
-    runs_path = Path(input("Please provide the path to the runs folder:"))
-    tech_emit_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/tech_emissions.xlsx")
-    print("Loading technology emissions rates... ")
-    emit_rate = pd.read_excel(tech_emit_path, sheet_name="emit_rate")
-    scenarios_list = listdir(runs_path)
-
-
-    run_list = []
-    path_list = []
-    for i, scenario in enumerate(scenarios_list):
-        # scenario = scenarios_list[1]
-        print(f"Scenario: {scenario} ({i}/{len(scenarios_list)})")
-        print("Loading model outputs...")
-        emit_r_path = runs_path/scenario/"outputs"/"emit_r.csv"
-        try:
-             # Read emit_r.csv
-             emit_r = pd.read_csv(emit_r_path)
-        except FileNotFoundError:
-            print("Necessary file not found. Check path argument and check the model outputs exist.")
-            continue
 
 # Read the SCC multipliers
 scc_mult = pd.read_excel('scc.xlsx')
