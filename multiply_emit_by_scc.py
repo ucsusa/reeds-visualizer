@@ -6,11 +6,7 @@ from glob import glob
 if __name__ == "__main__":
 
     scenarios = listdir('results/fy25')
-    files_list = glob('results/fy25/*/emit_irt.csv')
-
-    scc = pd.read_excel("data/scc_mult.xlsx")
-    scc['eall'] = scc['eall'].ffill().str.upper()
-
+    scc = pd.read_csv("data/scc_mult.csv")
 
     for i, scenario in enumerate(scenarios):
         emit_irt_path = Path(f'results/fy25/{scenario}/emit_irt.csv')
@@ -29,7 +25,8 @@ if __name__ == "__main__":
             suffixes=('_emit', '_scc')
         )
         # Multiply the values
-        merged['product'] = merged['Value_emit'] * merged['Value_scc']
+        merged['Value'] = merged['Value_emit'] * merged['Value_scc']
+        merged = merged.drop(columns=['Value_emit','Value_scc'])
         # Output the result
         scc_path = Path(f'results/fy25/{scenario}/scc_values.csv')
         merged.to_csv(scc_path, index=False)
