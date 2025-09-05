@@ -182,3 +182,6 @@ CP_MidTrans_LowDC_NoIRA
 LA_RPS_LowTrans**
 ELC_LowTrans**
 **CO2e**
+ELC_MidTrans_LowDC_NoIRA/
+TEST_LA_CO2_MidTrans_HighDC_NoIRA
+ELC_MidTrans_HighDC_NoIRA
