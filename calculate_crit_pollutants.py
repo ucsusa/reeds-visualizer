@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     # runs_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/runs")
     runs_path = Path(input("Please provide the path to the runs folder:"))
-    tech_emit_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/tech_emissions.xlsx")
+    tech_emit_path = Path("data/tech_emissions.xlsx")
     print("Loading technology emissions rates... ")
     emit_rate = pd.read_excel(tech_emit_path, sheet_name="emit_rate")
     scenarios_list = listdir(runs_path)
