@@ -8,3 +8,4 @@ metric_files:
   health damages: "health_damages_caused_r.csv"
   transmission mw-mi: "tran_mi_out_detail.csv"
   transmission mw: "tran_cap_energy.csv"
+  social cost of carbon: "scc_values.csv"
