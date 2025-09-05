@@ -5,5 +5,6 @@ metric_files:
   system costs: "systemcost_techba.csv"
   bulk costs: "systemcost_techba_bulk_ew.csv"
   net imports: "net_import_ann_rep.csv"
+  health damages: "health_damages_caused_r.csv"
   transmission mw-mi: "tran_mi_out_detail.csv"
   transmission mw: "tran_cap_energy.csv"

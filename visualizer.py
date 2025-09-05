@@ -63,35 +63,69 @@ def get_ba_to_state():
 
 # @st.cache_resource
 def get_data(metric):
+    if metric == 'health damages':
+        full_df = get_health_damages()
+    else:
+        frames = []
+        for scenario in scenarios_list:
+            df = pd.read_csv(path/scenario/metric_file[metric])
+            df['scenario'] = scenario
+            frames.append(df)
+        full_df = pd.concat(frames)
+
+        
+
+        agg_techs = ['wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
+
+        if ("i" in full_df.columns) & (aggregate_techs):
+            for tech in agg_techs:
+                if tech in ['coal', 'gas']:
+                    # pass
+                    full_df.loc[(full_df['i'].str.contains(tech, case=False) & ~full_df['i'].str.contains('CCS', case=False)),'i'] = tech
+                    full_df.loc[(full_df['i'].str.contains(tech, case=False) & full_df['i'].str.contains('CCS', case=False)),'i'] = f'{tech}_CCS'
+                else:
+                    full_df.loc[full_df['i'].str.contains(tech, case=False), 'i'] = tech
+
+        if agg_level == 'State':
+            ba_to_state = get_ba_to_state()
+            cols = list(full_df.columns)
+            cols.remove("Value")
+            full_df = full_df.replace(ba_to_state).groupby(cols).sum().reset_index()
+        elif agg_level == "National":
+            cols = list(full_df.columns)
+            cols.remove("Value")
+            cols.remove("r")
+            full_df = full_df.groupby(cols).sum().drop(columns=['r']).reset_index()
+    return full_df
+
+def get_health_damages(metric="health damages"):
     frames = []
     for scenario in scenarios_list:
         df = pd.read_csv(path/scenario/metric_file[metric])
         df['scenario'] = scenario
         frames.append(df)
     full_df = pd.concat(frames)
-    agg_techs = ['wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
-
-    if ("i" in full_df.columns) & (aggregate_techs):
-        for tech in agg_techs:
-            if tech in ['coal', 'gas']:
-                # pass
-                full_df.loc[(full_df['i'].str.contains(tech, case=False) & ~full_df['i'].str.contains('CCS', case=False)),'i'] = tech
-                full_df.loc[(full_df['i'].str.contains(tech, case=False) & full_df['i'].str.contains('CCS', case=False)),'i'] = f'{tech}_CCS'
-            else:
-                full_df.loc[full_df['i'].str.contains(tech, case=False), 'i'] = tech
 
     if agg_level == 'State':
-        ba_to_state = get_ba_to_state()
         cols = list(full_df.columns)
-        cols.remove("Value")
-        full_df = full_df.replace(ba_to_state).groupby(cols).sum().reset_index()
+        cols.remove("damage_$")
+        cols.remove("tons")
+        cols.remove("mortality")
+        cols.remove("md")
+        cols.remove("ba")
+        full_df = full_df.drop(columns='ba').groupby(cols).sum().reset_index()
+
     elif agg_level == "National":
         cols = list(full_df.columns)
-        cols.remove("Value")
-        cols.remove("r")
-        full_df = full_df.groupby(cols).sum().drop(columns=['r']).reset_index()
-    return full_df
+        cols.remove("damage_$")
+        cols.remove("tons")
+        cols.remove("mortality")
+        cols.remove("md")
+        cols.remove("ba")
+        cols.remove("state_abbr")
+        full_df = full_df.drop(columns=['ba','state_abbr']).groupby(cols).sum().reset_index()
 
+    return full_df
  
 # You should cache your pygwalker renderer, if you don't want your memory to explode
 # @st.cache_resource
