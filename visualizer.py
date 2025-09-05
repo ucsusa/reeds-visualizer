@@ -36,9 +36,8 @@ year_selectbox = st.sidebar.selectbox('Choose a version year',
                                         )
 path /= year_selectbox
 
-# scale_selectbox = st.sidebar.selectbox("Choose case",
-#                                        os.listdir(path))
-# path /= scale_selectbox
+# scale_selectbox = st.sidebar.selectbox("Choose case", os.listdir(path)) path
+#                                        /= scale_selectbox
 
 scenario_opts = os.listdir(path)
 
@@ -69,9 +68,6 @@ def get_data(metric):
         df['scenario'] = scenario
         frames.append(df)
     full_df = pd.concat(frames)
-
-    
-
     agg_techs = ['wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
 
     if ("i" in full_df.columns) & (aggregate_techs):
@@ -95,8 +91,8 @@ def get_data(metric):
         full_df = full_df.groupby(cols).sum().drop(columns=['r']).reset_index()
     return full_df
  
-# You should cache your pygwalker renderer, if you don't want your memory to explode
-# @st.cache_resource
+# You should cache your pygwalker renderer, if you don't want your memory to
+# explode @st.cache_resource
 def get_pyg_renderer() -> "StreamlitRenderer":
     with st.sidebar:
         metric_selectbox = st.selectbox(
