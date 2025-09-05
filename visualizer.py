@@ -91,8 +91,8 @@ def get_data(metric):
         full_df = full_df.groupby(cols).sum().drop(columns=['r']).reset_index()
     return full_df
  
-# You should cache your pygwalker renderer, if you don't want your memory to
-# explode @st.cache_resource
+# You should cache your pygwalker renderer, if you don't want your memory to explode 
+# @st.cache_resource
 def get_pyg_renderer() -> "StreamlitRenderer":
     with st.sidebar:
         metric_selectbox = st.selectbox(
