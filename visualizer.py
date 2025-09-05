@@ -36,8 +36,9 @@ year_selectbox = st.sidebar.selectbox('Choose a version year',
                                         )
 path /= year_selectbox
 
-# scale_selectbox = st.sidebar.selectbox("Choose case", os.listdir(path)) path
-#                                        /= scale_selectbox
+# scale_selectbox = st.sidebar.selectbox("Choose case", 
+#                                        os.listdir(path)) 
+# path /= scale_selectbox
 
 scenario_opts = os.listdir(path)
 
