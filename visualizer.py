@@ -93,7 +93,7 @@ def get_data(metric):
     return full_df
 
  
-# You should cache your pygwalker renderer, if you don't want your memory to explode 
+# You should cache your pygwalker renderer, if you don't want your memory to explode
 # @st.cache_resource
 def get_pyg_renderer() -> "StreamlitRenderer":
     with st.sidebar:
