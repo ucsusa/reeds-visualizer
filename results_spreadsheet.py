@@ -53,10 +53,18 @@ def clean_and_aggregate(df, scenario, region_to_state):
     df.insert(0, "scenario", scenario)
 
     # aggregate value
+    # Identify numeric columns to aggregate
     if "value" in df.columns:
-        df["value"] = pd.to_numeric(df["value"], errors="coerce")
-        group_cols = [c for c in df.columns if c != "value"]
-        df = df.groupby(group_cols, as_index=False)["value"].sum()
+        agg_cols = ["value"]
+    elif {"tons", "md", "damage_$", "mortality"}.issubset(df.columns):
+        agg_cols = ["tons", "md", "damage_$", "mortality"]
+    else:
+        agg_cols = []
+
+    if agg_cols:
+        # Group by all non-aggregated columns
+        group_cols = [c for c in df.columns if c not in agg_cols]
+        df = df.groupby(group_cols, as_index=False)[agg_cols].sum()
     else:
         df = df.drop_duplicates()
 
