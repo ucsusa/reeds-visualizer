@@ -23,7 +23,7 @@ with open(output_file, "w", newline="") as outcsv:
     writer = csv.writer(outcsv)
 
     # Header row: Scenario + filenames
-    writer.writerow(["Scenario"] + csv_files)
+    writer.writerow(["scenario"] + csv_files)
 
     # Rows: scenario and whether each file exists
     for scenario in scenario_folders:
