@@ -54,10 +54,12 @@ def clean_and_aggregate(df, scenario, region_to_state):
 
     # aggregate value
     # Identify numeric columns to aggregate
+    health_cols = ["tons", "md", "damage_$", "mortality"]
+    
     if "value" in df.columns:
         agg_cols = ["value"]
-    elif {"tons", "md", "damage_$", "mortality"}.issubset(df.columns):
-        agg_cols = ["tons", "md", "damage_$", "mortality"]
+    elif set(health_cols).issubset(df.columns):
+        agg_cols = health_cols
     else:
         agg_cols = []
 
@@ -82,18 +84,15 @@ tabs = {csv_name: [] for csv_name in csv_types}
 for _, row in tqdm(
     summary_df.iterrows(), total=len(summary_df), desc="Processing scenarios"
 ):
-    scenario = row["Scenario"]
+    scenario = row["scenario"]
     for csv_name in csv_types:
         csv_path = os.path.join(base_path, scenario, csv_name)
-        if not os.path.exists(csv_path):
-            continue
         try:
             df = pd.read_csv(csv_path)
             df = clean_and_aggregate(df, scenario, region_to_state)
             tabs[csv_name].append(df)
-        except Exception as e:
+        except FileNotFoundError as e:
             print(f"Error processing {csv_path}: {e}")
-
 # === Write Excel ===
 total_rows = 0
 for dfs in tabs.values():
