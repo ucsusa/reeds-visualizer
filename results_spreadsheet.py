@@ -108,13 +108,13 @@ if os.path.exists(output_excel):
     if_exists = "replace"
     print(f"Updating existing file: {output_excel}")
 else:
-    # Prefer xlsxwriter for new files, fall back to openpyxl
+    # Prefer the faster xlsxwriter for new files, fall back to openpyxl
     try:
         import xlsxwriter
         excel_engine = "xlsxwriter"
     except ImportError:
         excel_engine = "openpyxl"
-        print("⚠️ xlsxwriter not found, using openpyxl")
+        print("xlsxwriter not found, using openpyxl")
     mode = "w"
     if_exists = None
     print(f"Creating new file: {output_excel}")
