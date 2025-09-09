@@ -101,21 +101,36 @@ for dfs in tabs.values():
         total_rows += sum(len(df) for df in dfs)
 print(f"\nTotal rows across all sheets: {total_rows:,}\n")
 
-# Choose Excel writer engine
-try:
-    import xlsxwriter
-    excel_engine = "xlsxwriter"
-except ImportError:
+if os.path.exists(output_excel):
+    # Must use openpyxl for append mode
     excel_engine = "openpyxl"
-    print("\nxlsxwriter not found, falling back to openpyxl")
+    mode = "a"
+    if_exists = "replace"
+    print(f"Updating existing file: {output_excel}")
+else:
+    # Prefer xlsxwriter for new files, fall back to openpyxl
+    try:
+        import xlsxwriter
+        excel_engine = "xlsxwriter"
+    except ImportError:
+        excel_engine = "openpyxl"
+        print("⚠️ xlsxwriter not found, using openpyxl")
+    mode = "w"
+    if_exists = None
+    print(f"Creating new file: {output_excel}")
 
-# Write to Excel
-with pd.ExcelWriter(output_excel, engine=excel_engine) as writer:
+with pd.ExcelWriter(
+    output_excel,
+    engine=excel_engine,
+    mode=mode,
+    if_sheet_exists=if_exists
+) as writer:
     for csv_name, dfs in tqdm(tabs.items(), desc="Writing Excel", unit="sheet"):
-        dfs = [df for df in dfs if not df.empty]  # drop empties
+        dfs = [df for df in dfs if not df.empty]
         if not dfs:
             continue
         combined = pd.concat(dfs, ignore_index=True)
-        combined.to_excel(writer, csv_name.replace(".csv", "")[:31], index=False)
+        sheet_name = csv_name.replace(".csv", "")[:31]
+        combined.to_excel(writer, sheet_name=sheet_name, index=False)
 
 print(f"\nWrote {output_excel}")
