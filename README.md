@@ -57,4 +57,10 @@ git pull origin main
 > You cannot pull changes or execute any commands in the same session that is running the visualizer.
 > In other words, you must shut down the visualizer, pull the changes, and restart it for the changes to take effect.
 
+# Compiling results into a spreadsheet for analysis
 
+There are two scripts which can be run sequentially to aid in analyzing results.
+
+1. **Run `results_list.py` to create a matrix of results**, with rows for scenarios and columns for metrics (generation, capacity, emissions, etc). "TRUE" indicates that an output file exists for the given combination of scenario and metric.
+2. **Edit `analysis/results_list.csv` to limit which files will be included in the final spreadsheet.** This can be acomplished by deleting entire rows/columns, and/or deleting "TRUE" from specific combinations that aren't needed. Limiting which files are included will greatly reduce the processing time and the file size of the final result. Very large files may be unstable.
+3. **Run results_spreadsheet.py to create a spreadsheet with the desired results.** If there is an existing version of `results_spreadsheet.xlsx`, the script will append it, and overwrite existing sheets. Otherwise, a new copy will be created.
