@@ -21,15 +21,25 @@ def load_region_map(path):
 
 
 def clean_and_aggregate(df, scenario, region_to_state):
+    # Remove duplicates
+    df = df.drop_duplicates()
+    
     # Normalize headers
     df.columns = df.columns.str.strip().str.lower()
 
-    # Map either 'r' or 'ba' to state (whichever exists)
-    col = {"r", "ba"}.intersection(df.columns)
-    if col:
-        col = col.pop()
-        df["state"] = df[col].map(region_to_state)
-        df = df.drop(columns=[col])
+    # Drop 'ba' if present
+    if "ba" in df.columns:
+        df = df.drop(columns=["ba"])
+
+    # Map 'r' to state
+    if "r" in df.columns:
+        df["state"] = df["r"].map(region_to_state)
+        df = df.drop(columns=["r"])
+
+    # Map 'rr' to state2
+    if "rr" in df.columns:
+        df["state2"] = df["rr"].map(region_to_state)
+        df = df.drop(columns=["rr"])
 
     # collapse i
     if "i" in df.columns:
@@ -55,7 +65,7 @@ def clean_and_aggregate(df, scenario, region_to_state):
     # aggregate value
     # Identify numeric columns to aggregate
     health_cols = ["tons", "md", "damage_$", "mortality"]
-    
+
     if "value" in df.columns:
         agg_cols = ["value"]
     elif set(health_cols).issubset(df.columns):
@@ -124,7 +134,7 @@ with pd.ExcelWriter(
     mode=mode,
     if_sheet_exists=if_exists
 ) as writer:
-    for csv_name, dfs in tqdm(tabs.items(), desc="Writing Excel", unit="sheet"):
+    for csv_name, dfs in tqdm(tabs.items(), desc="Writing XLSX", unit="sheet"):
         dfs = [df for df in dfs if not df.empty]
         if not dfs:
             continue
