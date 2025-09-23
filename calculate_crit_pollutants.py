@@ -3,18 +3,33 @@ from pathlib import Path
 from os import listdir
 from glob import glob
 import numpy as np
+from tqdm import tqdm
 
 if __name__ == "__main__":
-    test_years = [2020]
-    tolerance = 1e-0
+    # test_years = [2020, 2023, 2026, 2029, 2032, 2035, 2038, 2041, 2044, 2047, 2050]
+    test_years = [2020, 2023, 2026, 2029, 2032, 2035, 2038, 2041, 2044, 2047, 2050]
+    tolerance = 1e-5
 
-    # runs_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/runs")
     runs_path = Path(input("Please provide the path to the runs folder:"))
-    tech_emit_path = Path("data/tech_emissions.xlsx")
-    print("Loading technology emissions rates... ")
-    emit_rate = pd.read_excel(tech_emit_path, sheet_name="emit_rate")
     scenarios_list = listdir(runs_path)
 
+    # for testing 
+    # runs_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/final_runs")
+    # scenarios_list = ['FINAL_ST_CO2_MidTrans_LowDC_OBBBA']
+    # scenarios_list = ['FINAL_CP_LowTrans_LowDC_OBBBA']
+
+    tech_emit_path = Path("data/tech_emissions.xlsx")
+    print("Loading technology emissions rates... ")
+
+    tech_emissions_paths = [tech_emit_path,
+                            runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
+                            runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
+                            ]
+
+    emit_rates = []
+    for p in tqdm(tech_emissions_paths):
+        er = pd.read_excel(p, sheet_name="emit_rate") 
+        emit_rates.append(er)
 
     run_list = []
     path_list = []
@@ -33,16 +48,25 @@ if __name__ == "__main__":
             print("Necessary file not found. Check path argument and check the model outputs exist.")
             continue
 
+        if "ST_CO2" in scenario:
+            emit_rate = emit_rates[1]
+        elif "95by2050" in scenario:
+            emit_rate = emit_rates[2]
+        else:
+            emit_rate = emit_rates[0]
+    
+
         # check if NOx and SO2 are in the model output emissions... 
-        if all(crit in emit_ivrt.eall.unique() for crit in ['NOx','SO2']):
+        if all(crit in emit_ivrt.eall.unique() for crit in ['NOx','SO2', 'NAN']):
             # print('File already contains criteria pollutants! Skipping')
             # emissions are included in this scenario, move onto the next one
             continue
         else:
             merged = pd.merge(emit_rate, gen_ivrt, on=['i','v','r','t'])
+            # breakpoint()
             merged['emit'] = (merged['Value'] * merged['rate'])
 
-            # print('Verifying accurate emissions calculation')
+            print('Verifying accurate emissions calculation')
             errors = np.zeros(len(test_years))
             for i,test_year in enumerate(test_years):
                 calculated_co2 = merged.loc[:,['eall','t','emit']].groupby(['eall','t']).sum().loc[('CO2',test_year)].values[0]
@@ -50,12 +74,13 @@ if __name__ == "__main__":
 
                 rel_error = (modeled_co2-calculated_co2)/modeled_co2
                 # print(f"Relative Error for {test_year}: {rel_error:.3f}")
+                print(f"Relative Error for {test_year}: {rel_error}")
                 errors[i] = rel_error
 
             mean_rel_error = np.mean(errors)
-
+            # breakpoint()
             if mean_rel_error < tolerance:
-                # print(f"Emissions are accurate within tolerance of {tolerance}, proceeding...")
+                print(f"Emissions are accurate within tolerance of {tolerance}, proceeding...")
                 crit_pollutants = merged.loc[:,['eall','r','t','emit']]\
                                         .groupby(['eall','r','t'])\
                                         .sum()\

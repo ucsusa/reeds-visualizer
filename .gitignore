@@ -185,6 +185,9 @@ ELC_LowTrans**
 ELC_MidTrans_LowDC_NoIRA/
 TEST_LA_CO2_MidTrans_HighDC_NoIRA
 ELC_MidTrans_HighDC_NoIRA
+*NoIRA
+TIME**
+*.ipynb
 
 analysis/*
 !*.gitkeep
