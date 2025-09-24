@@ -21,7 +21,9 @@ if __name__ == "__main__":
     tech_emit_path = Path("data/tech_emissions.xlsx")
     print("Loading technology emissions rates... ")
 
-    tech_emissions_paths = [tech_emit_path,
+    tech_emissions_paths = [
+                            # tech_emit_path,
+                            '':runs_path/"FINAL_CP_LowTrans_LowDC_OBBBA/tech_emissions.xlsx",
                             runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
                             runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
                             ]
