@@ -75,7 +75,7 @@ def get_data(metric):
 
         
 
-        agg_techs = ['wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
+        agg_techs = [ 'geo','wind-ons','wind-ofs','pv','csp','hyd', 'egs', 'coal','gas']
 
         if ("i" in full_df.columns) & (aggregate_techs):
             for tech in agg_techs:
