@@ -7,8 +7,8 @@ from tqdm import tqdm
 
 if __name__ == "__main__":
     # test_years = [2020, 2023, 2026, 2029, 2032, 2035, 2038, 2041, 2044, 2047, 2050]
-    test_years = [2020, 2023, 2026, 2029, 2032, 2035, 2038, 2041, 2044, 2047, 2050]
-    tolerance = 1e-5
+    test_years = [2020]
+    tolerance = 1
 
     runs_path = Path(input("Please provide the path to the runs folder:"))
     scenarios_list = listdir(runs_path)
@@ -22,14 +22,16 @@ if __name__ == "__main__":
     print("Loading technology emissions rates... ")
 
     tech_emissions_paths = [tech_emit_path,
-                            runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
-                            runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
+                            # runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
+                            # runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
                             ]
 
     emit_rates = []
     for p in tqdm(tech_emissions_paths):
         er = pd.read_excel(p, sheet_name="emit_rate") 
         emit_rates.append(er)
+
+    emit_rate = emit_rates[0]
 
     run_list = []
     path_list = []
@@ -48,13 +50,12 @@ if __name__ == "__main__":
             print("Necessary file not found. Check path argument and check the model outputs exist.")
             continue
 
-        if "ST_CO2" in scenario:
-            emit_rate = emit_rates[1]
-        elif "95by2050" in scenario:
-            emit_rate = emit_rates[2]
-        else:
-            emit_rate = emit_rates[0]
-    
+        # if "ST_CO2" in scenario:
+        #     emit_rate = emit_rates[1]
+        # elif "95by2050" in scenario:
+        #     emit_rate = emit_rates[2]
+        # else:
+        #     emit_rate = emit_rates[0]    
 
         # check if NOx and SO2 are in the model output emissions... 
         if all(crit in emit_ivrt.eall.unique() for crit in ['NOx','SO2', 'NAN']):
