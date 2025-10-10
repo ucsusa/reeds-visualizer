@@ -5,10 +5,13 @@ from glob import glob
 import numpy as np
 from tqdm import tqdm
 
+POLLUTANTS = ['NOX', 'SO2', 'CO2e']
+
+
 if __name__ == "__main__":
-    # test_years = [2020, 2023, 2026, 2029, 2032, 2035, 2038, 2041, 2044, 2047, 2050]
-    test_years = [2020]
-    tolerance = 1
+    test_years = [2020, 2023, 2026, 2029, 2032, 2035, 2038, 2041, 2044, 2047, 2050]
+    # test_years = [2020]
+    tolerance = 1e-6
 
     runs_path = Path(input("Please provide the path to the runs folder:"))
     scenarios_list = listdir(runs_path)
@@ -18,12 +21,13 @@ if __name__ == "__main__":
     # scenarios_list = ['FINAL_ST_CO2_MidTrans_LowDC_OBBBA']
     # scenarios_list = ['FINAL_CP_LowTrans_LowDC_OBBBA']
 
-    tech_emit_path = Path("data/tech_emissions.xlsx")
+    # tech_emit_path = Path("data/tech_emissions.xlsx")
+    tech_emit_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/tech_emissions.xlsx")
     print("Loading technology emissions rates... ")
 
     tech_emissions_paths = [tech_emit_path,
-                            # runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
-                            # runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
+                            runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
+                            runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
                             ]
 
     emit_rates = []
@@ -31,7 +35,7 @@ if __name__ == "__main__":
         er = pd.read_excel(p, sheet_name="emit_rate") 
         emit_rates.append(er)
 
-    emit_rate = emit_rates[0]
+    # emit_rate = emit_rates[0]
 
     run_list = []
     path_list = []
@@ -50,55 +54,59 @@ if __name__ == "__main__":
             print("Necessary file not found. Check path argument and check the model outputs exist.")
             continue
 
-        # if "ST_CO2" in scenario:
-        #     emit_rate = emit_rates[1]
-        # elif "95by2050" in scenario:
-        #     emit_rate = emit_rates[2]
-        # else:
-        #     emit_rate = emit_rates[0]    
+        if "ST_CO2" in scenario:
+            emit_rate = emit_rates[1]
+        elif "95by2050" in scenario:
+            emit_rate = emit_rates[2]
+        else:
+            emit_rate = emit_rates[0]    
 
         # check if NOx and SO2 are in the model output emissions... 
-        if all(crit in emit_ivrt.eall.unique() for crit in ['NOx','SO2', 'NAN']):
-            # print('File already contains criteria pollutants! Skipping')
+        if any(crit in emit_r.eall.unique() for crit in POLLUTANTS):
+            print('File already contains criteria pollutants! Overwriting')
             # emissions are included in this scenario, move onto the next one
-            continue
+            emit_r = emit_r.loc[~emit_r['eall'].isin(POLLUTANTS)]
         else:
-            merged = pd.merge(emit_rate, gen_ivrt, on=['i','v','r','t'])
+            continue
+
+
+        # Calculate criteria pollutants and verify against known CO2 calculations.
+        merged = pd.merge(emit_rate, gen_ivrt, on=['i','v','r','t'])
+        # breakpoint()
+        merged['emit'] = (merged['Value'] * merged['rate'])
+
+        print('Verifying accurate emissions calculation')
+        errors = np.zeros(len(test_years))
+        for i,test_year in enumerate(test_years):
+            calculated_co2 = merged.loc[:,['eall','t','emit']].groupby(['eall','t']).sum().loc[('CO2',test_year)].values[0]
+            modeled_co2 = emit_ivrt.loc[:,['eall','t','Value']].groupby(['eall','t']).sum().loc[('CO2',test_year)].values[0]
+
+            rel_error = (modeled_co2-calculated_co2)/modeled_co2
+            print(f"Relative Error for {test_year}: {rel_error:.3f}")
+            # print(f"Relative Error for {test_year}: {rel_error}")
+            errors[i] = rel_error
+
+        mean_rel_error = np.mean(errors)
+        # breakpoint()
+        if mean_rel_error < tolerance:
+            print(f"Emissions are accurate within tolerance of {tolerance}, proceeding...")
+            crit_pollutants = merged.loc[:,['eall','r','t','emit']]\
+                                    .groupby(['eall','r','t'])\
+                                    .sum()\
+                                    .rename(columns={'emit':'Value'})\
+                                    .loc[(tuple(POLLUTANTS), slice(None), slice(None)),:]\
+                                    .reset_index()
+            
+            emit_r_update = pd.concat([emit_r, crit_pollutants]).drop_duplicates()
             # breakpoint()
-            merged['emit'] = (merged['Value'] * merged['rate'])
+            emit_r_update.to_csv(str(runs_path/scenario/"outputs"/"emit_r.csv"),index=False)
 
-            print('Verifying accurate emissions calculation')
-            errors = np.zeros(len(test_years))
-            for i,test_year in enumerate(test_years):
-                calculated_co2 = merged.loc[:,['eall','t','emit']].groupby(['eall','t']).sum().loc[('CO2',test_year)].values[0]
-                modeled_co2 = emit_ivrt.loc[:,['eall','t','Value']].groupby(['eall','t']).sum().loc[('CO2',test_year)].values[0]
-
-                rel_error = (modeled_co2-calculated_co2)/modeled_co2
-                # print(f"Relative Error for {test_year}: {rel_error:.3f}")
-                print(f"Relative Error for {test_year}: {rel_error}")
-                errors[i] = rel_error
-
-            mean_rel_error = np.mean(errors)
-            # breakpoint()
-            if mean_rel_error < tolerance:
-                print(f"Emissions are accurate within tolerance of {tolerance}, proceeding...")
-                crit_pollutants = merged.loc[:,['eall','r','t','emit']]\
-                                        .groupby(['eall','r','t'])\
-                                        .sum()\
-                                        .rename(columns={'emit':'Value'})\
-                                        .loc[(('SO2','NOX','CO2e'), slice(None), slice(None)),:]\
-                                        .reset_index()
-                
-                emit_r_update = pd.concat([emit_r, crit_pollutants]).drop_duplicates()
-                # breakpoint()
-                emit_r_update.to_csv(str(runs_path/scenario/"outputs"/"emit_r.csv"),index=False)
-
-                run_list.append(scenario)
-                path_list.append(str(runs_path/scenario))
-            else:
-                print(f"Mean relative error exceeds tolerance of {tolerance}, moving to next scenario.")
-                print(f"Mean Relative Error: {mean_rel_error}")
-                continue
+            run_list.append(scenario)
+            path_list.append(str(runs_path/scenario))
+        else:
+            print(f"Mean relative error exceeds tolerance of {tolerance}, moving to next scenario.")
+            print(f"Mean Relative Error: {mean_rel_error}")
+            continue
 
     print("Creating dataframe of runs")
     scenario_df = pd.DataFrame({'run':run_list,
