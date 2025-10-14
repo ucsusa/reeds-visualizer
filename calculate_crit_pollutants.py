@@ -21,13 +21,18 @@ if __name__ == "__main__":
     # scenarios_list = ['FINAL_ST_CO2_MidTrans_LowDC_OBBBA']
     # scenarios_list = ['FINAL_CP_LowTrans_LowDC_OBBBA']
 
-    # tech_emit_path = Path("data/tech_emissions.xlsx")
-    tech_emit_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/tech_emissions.xlsx")
+    tech_emit_path = Path("data/tech_emissions.xlsx")
+    # tech_emit_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/tech_emissions.xlsx")
     print("Loading technology emissions rates... ")
 
+    # tech_emissions_paths = [tech_emit_path,
+    #                         runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
+    #                         runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
+    #                         ]
+
     tech_emissions_paths = [tech_emit_path,
-                            runs_path/"FINAL_ST_CO2_MidTrans_LowDC/tech_emissions.xlsx",
-                            runs_path/"FINAL_CP_MidTrans_LowDC_95by2050/tech_emissions.xlsx",
+                            "data/tech_emissions_ST.xlsx",
+                            "data/tech_emissions_95by2050.xlsx",
                             ]
 
     emit_rates = []

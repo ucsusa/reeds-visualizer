@@ -6,7 +6,7 @@ from glob import glob
 import os
 import yaml
 
-results_version = ['test_results','results']
+results_version = ['results']
 available_years = ['fy25']
 aggregation_level = ['BA', 'State', 'National']
 
