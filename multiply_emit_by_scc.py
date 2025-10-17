@@ -43,7 +43,7 @@ if __name__ == "__main__":
         )
         # Multiply the values and discount them back to the analysis year
         merged['Value'] = merged['Value_emit'] * merged['Value_scc'] * merged['dtau']
-        merged = merged.drop(columns=['Value_emit','Value_scc','dtau'])
+        # merged = merged.drop(columns=['Value_emit','Value_scc','dtau'])
         
         # Deflate to 2004$
         merged['Value'] = merged['Value'] * deflator.at[dollar_year, 'Deflator']

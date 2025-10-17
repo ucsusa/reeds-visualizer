@@ -9,6 +9,7 @@ metric_files:
   transmission mw-mi: "tran_mi_out_detail.csv"
   transmission mw: "tran_cap_energy.csv"
   social cost of carbon: "scc_values.csv"
+  new_capacity_additions: "cap_new_ivrt.csv"
 
 analysis_year: 2024
 social_discount_rate: 0.02  # 2%
