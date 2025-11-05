@@ -64,7 +64,7 @@ def clean_and_aggregate(df, scenario, region_to_state):
 
     # aggregate value
     # Identify numeric columns to aggregate
-    value_cols = ["value_emit", "value", "Value", "tons", "md", "damage_$", "mortality"]
+    value_cols = ["value_emit", "value", "tons", "md", "damage_$", "mortality"]
 
     # Determine which of the above columns exist in the dataframe
     agg_cols = [c for c in value_cols if c in df.columns]
