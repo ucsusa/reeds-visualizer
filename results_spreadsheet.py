@@ -64,14 +64,10 @@ def clean_and_aggregate(df, scenario, region_to_state):
 
     # aggregate value
     # Identify numeric columns to aggregate
-    health_cols = ["tons", "md", "damage_$", "mortality"]
+    value_cols = ["value_emit", "value", "tons", "md", "damage_$", "mortality"]
 
-    if "value" in df.columns:
-        agg_cols = ["value"]
-    elif set(health_cols).issubset(df.columns):
-        agg_cols = health_cols
-    else:
-        agg_cols = []
+    # Determine which of the above columns exist in the dataframe
+    agg_cols = [c for c in value_cols if c in df.columns]
 
     if agg_cols:
         # Group by all non-aggregated columns
