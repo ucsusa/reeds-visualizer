@@ -10,6 +10,7 @@ metric_files:
   transmission mw: "tran_cap_energy.csv"
   social cost of carbon: "scc_values.csv"
   new capacity additions: "cap_new_ivrt.csv"
+  natural gas price: "repgasprice_r.csv"
 
 analysis_year: 2024
 social_discount_rate: 0.02  # 2%
