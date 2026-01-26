@@ -11,6 +11,9 @@ metric_files:
   social cost of carbon: "scc_values.csv"
   new capacity additions: "cap_new_ivrt.csv"
   natural gas price: "repgasprice_r.csv"
+  uncurtailed generation: "gen_ivrt_uncurt.csv"
+  acp purchases: "acp_purchases_out.csv"
+  recs: "rec_outputs.csv"
 
 analysis_year: 2024
 social_discount_rate: 0.02  # 2%
