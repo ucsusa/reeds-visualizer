@@ -14,6 +14,9 @@ metric_files:
   uncurtailed generation: "gen_ivrt_uncurt.csv"
   acp purchases: "acp_purchases_out.csv"
   recs: "rec_outputs.csv"
+  hourly generation: "gen_ivrt.csv"
+  capacity vintage: "cap_ivrt.csv"
+  water consumption: "water_consumption_ivrt.csv"
 
 analysis_year: 2024
 social_discount_rate: 0.02  # 2%
