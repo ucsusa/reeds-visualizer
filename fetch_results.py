@@ -14,18 +14,21 @@ metric_file = config['metric_files']
 
 if __name__ == "__main__":
 
-    search_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/final_runs/")
+    search_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/fy26/")
+    # search_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/final_runs/")
     # search_path = Path("C:/Users/SDotson/ReEDS-2.0/runs/penultimate_runs/")
 
     # target_path = Path("./test_results/move_test")
-    target_path = Path("./results/fy25/")
+    # target_path = Path("./results/fy25/")
+    target_path = Path("./results/fy26/")
     # target_path.mkdir(exist_ok=True, parents=True)
 
     for dir in os.listdir(search_path):
         print(f"[{dir}]")
         for file in metric_file.values():
             # print(file)
-            original_path = search_path/dir/"outputs"/file
+            # original_path = search_path/dir/"outputs"/file
+            original_path = search_path/dir/file
             # print(original_path)
             if original_path.exists():
                 new_dir = dir.strip('_')
